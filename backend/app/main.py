@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware # 1. 导入 CORS 中间件
+from app.db.session import engine, Base
+from app.api.endpoints import users
 
 app = FastAPI()
 
@@ -18,9 +20,15 @@ app.add_middleware(
     allow_headers=["*"],        # 允许什么 Header
 )
 
+# 自动创建数据库表（生产环境通常用 Alembic 迁移工具，这里为了简单直接创建）
+Base.metadata.create_all(bind=engine)
+
+# 包含用户模块的路由
+app.include_router(users.router, prefix="/users", tags=["users"])
+
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+def root():
+    return {"message": "System is running"}
 
 # 4. 新增一个专门给前端测试的接口
 @app.get("/api/data")
