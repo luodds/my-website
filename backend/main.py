@@ -1,27 +1,32 @@
-from typing import Union
-
 from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware # 1. 导入 CORS 中间件
 
 app = FastAPI()
 
+# 2. 配置允许的来源列表
+origins = [
+    "http://localhost:3000",    # Next.js 默认地址
+    "http://127.0.0.1:3000",
+]
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
-
+# 3. 添加中间件 (这就是“放行条”)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,      # 允许谁访问
+    allow_credentials=True,
+    allow_methods=["*"],        # 允许什么方法 (GET, POST等)
+    allow_headers=["*"],        # 允许什么 Header
+)
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+# 4. 新增一个专门给前端测试的接口
+@app.get("/api/data")
+def get_data():
+    return {
+        "message": "这是来自 Python 后端的数据！🐍", 
+        "status": "success",
+        "code": 200
+    }
