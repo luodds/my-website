@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware # 1. 导入 CORS 中间件
 from app.db.session import engine, Base
-from app.api.endpoints import users
+from app.api.endpoints import users, auth
 
 app = FastAPI()
 
@@ -25,6 +25,13 @@ Base.metadata.create_all(bind=engine)
 
 # 包含用户模块的路由
 app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
+
+
+
+
+
+
 
 @app.get("/")
 def root():
