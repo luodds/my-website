@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link"; // 记得引入 Link
 import { useState } from "react";
 import { authService } from "@/services/auth";
 import { useAuth } from "@/context/AuthContext";
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -62,6 +64,15 @@ export default function LoginPage() {
             登录
           </button>
         </form>
+        
+        {/* 👇 新增：去注册的链接 */}
+        <p className="mt-4 text-center text-sm text-gray-600">
+          还没有账号？{" "}
+          <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
+            去注册
+          </Link>
+        </p>
+
       </div>
     </div>
   );
