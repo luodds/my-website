@@ -26,9 +26,18 @@ def create_user(db: Session, user: UserCreate):
     db.refresh(db_user)
     return db_user
 
-# --- 新增认证函数 ---
-def authenticate_user(db: Session, username: str, password: str):
-    user = get_user_by_username(db, username=username)
+# --- 用户名认证函数方法 ---
+# def authenticate_user(db: Session, username: str, password: str):
+#     user = get_user_by_username(db, username=username)
+#     if not user:
+#         return None
+#     if not verify_password(password, user.hashed_password):
+#         return None
+#     return user
+
+# --- 邮箱认证函数方法 ---
+def authenticate_user(db: Session, email: str, password: str):
+    user = get_user_by_email(db, email=email)
     if not user:
         return None
     if not verify_password(password, user.hashed_password):
