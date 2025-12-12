@@ -8,6 +8,9 @@ from app.core.security import verify_password  # 记得引入 verify_password
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
+
 def create_user(db: Session, user: UserCreate):
     # 1. 密码加密
     hashed_password = get_password_hash(user.password)

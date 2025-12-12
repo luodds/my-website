@@ -2,18 +2,28 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# SQLite 数据库文件放在当前目录下
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
+# PostgreSQL 连接字符串：
+# postgresql+psycopg2://用户名:密码@主机:端口/数据库名
+SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:123456@localhost:5432/my-website-db"
 
-# connect_args 是 SQLite 特有的，其他数据库不需要
+# 创建 PostgreSQL 的 Engine（注意：不再需要 SQLite 的 connect_args）
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL,
+    echo=False,        # 调试时可以改成 True 看 SQL
+    future=True,       # 可选，使用 SQLAlchemy 2.0 风格
 )
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# SessionLocal 保持不变
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)
+
+# Base 也一样
 Base = declarative_base()
 
-# 这是一个依赖项函数，用于给每个请求分配一个数据库会话
+# FastAPI 依赖项
 def get_db():
     db = SessionLocal()
     try:
