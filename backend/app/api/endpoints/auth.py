@@ -22,8 +22,9 @@ def login_access_token(
     # 1. 验证用户
     # 注意：OAuth2PasswordRequestForm 只有 username 和 password 字段
     # 虽然我们要用 email 登录，但前端还是把 email 填在 username 字段里发过来
-    user = crud_user.authenticate_user(db, username=form_data.username, password=form_data.password)
-    
+    # user = crud_user.authenticate_user(db, username=form_data.username, password=form_data.password)
+    user = crud_user.authenticate_user(db, email=form_data.username, password=form_data.password)
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
