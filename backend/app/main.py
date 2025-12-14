@@ -1,7 +1,11 @@
+import os # 👈 记得导入 os
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware # 1. 导入 CORS 中间件
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles # 👈 1. 导入 StaticFiles
+
 from app.db.session import engine, Base
-from app.api.endpoints import users, auth
+from app.api.endpoints import users, auth, portfolio # 👈 2. 导入 portfolio 模块
+from app.models import portfolio as portfolio_model
 
 app = FastAPI()
 
@@ -10,6 +14,15 @@ origins = [
     "http://localhost:3000",    # Next.js 默认地址
     "http://127.0.0.1:3000",
 ]
+
+# 3. 挂载静态文件目录
+# 确保 backend/static 目录存在，如果不存在则创建
+if not os.path.exists("static"):
+    os.makedirs("static")
+
+# 这里的逻辑是：当访问 http://localhost:8000/static/xxx 时
+# FastAPI 会去项目根目录下的 static 文件夹找对应的文件
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # 3. 添加中间件 (这就是“放行条”)
 app.add_middleware(
@@ -23,14 +36,12 @@ app.add_middleware(
 # 自动创建数据库表（生产环境通常用 Alembic 迁移工具，这里为了简单直接创建）
 Base.metadata.create_all(bind=engine)
 
+
+
 # 包含用户模块的路由
 app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
-
-
-
-
-
+app.include_router(portfolio.router, prefix="/portfolio", tags=["portfolio"])
 
 
 @app.get("/")

@@ -5,6 +5,7 @@
 Thumbs.db
 .vscode/
 .idea/
+imgs/
 
 # ========================
 # 后端 (Python / FastAPI)
@@ -23,11 +24,15 @@ env/
 .env
 .env.*
 
+
+/backend/static
 # ========================
 # 前端 (Node.js / Next.js)
 # ========================
 # 依赖包 (体积巨大，不需要提交)
 node_modules/
+
+
 
 # Next.js 构建产物 (类似 build 文件夹)
 .next/
